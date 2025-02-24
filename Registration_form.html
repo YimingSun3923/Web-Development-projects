@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Survey Form</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <h1 id="title">Improviser Registration Form</h1>
+    <p id="description">Please fill out this form to sign up for <span class="fancy-text">Cymbal in the Piano</span> improvisation sessions</p>
+    <p id="description2">Every Sunday 3pm</p>
+
+    <form id="survey-form">
+      <fieldset>
+        <label id="name-label" for="name">Enter Your Name: <input placeholder="Michael Jackson" id="name" name="name" type="text" required /></label>
+        
+        <label id="email-label" for="email">Enter Your Email: <input placeholder="mjackson@gmail.com" id="email" name="email" type="email" required /></label>
+
+        <label for="instrument">Enter Your Instrument: <input placeholder="Triangle, tambourine..." id="instrument" name="instrument" type="text" /></label>
+
+        <label id="number-label" for="age"> Enter your age (years): <input placeholder="In integers" id="number" type="number" name="age" min="12" max="100" /></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>What's your level?</legend>
+        <label for="beginner">
+            <input id="beginner" type="checkbox" name="personality" value="beginner" checked> Beginner
+        </label>
+        <label for="intermediate">
+            <input id="intermediate" type="checkbox" name="personality" value="intermediate"> Intermediate
+        </label>
+        <label for="advanced">
+            <input id="advanced" type="checkbox" name="personality" value="advanced"> Advanced
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Are you interested in joining the committee to organise these sessions?</legend>
+        <label for="yes">
+            <input id="yes" type="radio" name="committee" value="yes"> Yes
+        </label>
+        <label for="no">
+            <input id="no" type="radio" name="committee" value="no" checked> No
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <label for="referrer">How did you hear about us?
+          <select id="dropdown" name="referrer">
+            <option value="">Select One</option>
+            <option value="Vortex Jazz Club">Vortex Jazz Club</option>
+            <option value="RAM">RAM</option>
+            <option value="RCM">RCM</option>
+            <option value="Kensington Chamber Choir">Kensington Chamber Choir</option>
+            <option value="Imperial Big Band">Imperial Big Band</option>
+            <option value="Word of mouth">Word of mouth</option>
+            <option value="Our Website">Our Website</option>
+            <option value="Flyers">Flyers</option>
+            <option value="Others">Others</option>
+          </select>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <label for="comments" class="comments">Additional comments:
+          <textarea id="comments" name="comments" rows="5" cols="30" placeholder="I like singing on the beach..."></textarea>
+        </label>
+        <label for="terms-and-conditions">
+            <input class="inline" id="terms-and-conditions" type="checkbox" value="terms" required name="terms-and-conditions" /> I accept <span class="fancy-text">Cymbal in the Piano</span> may keep my information
+        </label>
+        <label for="mailing-list">
+            <input class="inline" id="mailing-list" type="checkbox" value="mailing-list" name="mailing-list" /> I would like to join the mailing list
+        </label>
+        <input type="submit" id="submit" value="Submit" />
+      </fieldset>
+    </form>
+
+    <script>
+      window.onload = function() {
+        document.getElementById("survey-form").addEventListener("submit", function(event) {
+          event.preventDefault(); // Stop normal form submission
+
+          let formData = {
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            instrument: document.getElementById("instrument").value,
+            age: document.getElementById("number").value,
+            level: Array.from(document.querySelectorAll('input[name="personality"]:checked')).map(cb => cb.value).join(", "),
+            committee: document.querySelector('input[name="committee"]:checked')?.value || "",
+            referrer: document.getElementById("dropdown").value,
+            comments: document.getElementById("comments").value,
+            terms: document.getElementById("terms-and-conditions").checked ? "Accepted" : "Not Accepted",
+            mailing_list: document.getElementById("mailing-list").checked ? "Yes" : "No"
+          };
+
+          console.log("Submitting data:", formData); // Debugging step
+
+          // Convert form data to query parameters
+          const queryParams = new URLSearchParams(formData).toString();
+
+          // Send data as a GET request
+          fetch(`https://script.google.com/macros/s/AKfycbw20I9xiKxhVBWjg871NE4JDdz51aPBo5JGT3BYiFAPa_Jmy2xgfpb9jCTwDSLaTh9v/exec?${queryParams}`, {
+            method: "GET",
+            redirect: "follow"
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log("Server Response:", data); // Check server response
+            alert("Form submitted successfully!");
+          })
+          .catch(error => {
+            console.error("Error:", error);
+            alert("Error submitting form. Check the console.");
+          });
+        });
+      };
+    </script>
+  </body>
+</html>
